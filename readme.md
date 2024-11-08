@@ -11,6 +11,7 @@ Este projeto implementa algoritmos de busca heurística para resolver o problema
 
 * **Distância de Manhattan:** Soma as distâncias de cada peça à sua posição correta.
 
+## Visualização
 ![mapa](imagens/mapa.png)
 ![custo uniforme](imagens/custo.png)
 ![gulosa](imagens/gulosa.png)
