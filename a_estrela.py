@@ -1,7 +1,6 @@
 import heapq
 
 class NodeA:
-    visited = set()
     tb_custo = {
     '.' : 1,
     'L' : 5,
@@ -9,7 +8,6 @@ class NodeA:
     }
     def __init__(self, cord, meta, matrix = None, pai = None):
         self.i, self.j = cord
-        NodeA.visited.add(cord)
         self.pai = pai
         self.dist = abs(self.i - meta[0]) + abs(self.j - meta[1])
         if pai:
@@ -30,10 +28,9 @@ class NodeA:
         return chave in NodeA.tb_custo
     def get_pai(self):
         return self.pai
-    def visitado(i, j):
-        return (i, j) in NodeA.visited
     
 def busca_a_estrela(grid, pos_inicial, pos_tesouro):
+    visited = set()
     caminho = []
     fila = []
     guarda_linha = len(grid) - 1
@@ -51,36 +48,36 @@ def busca_a_estrela(grid, pos_inicial, pos_tesouro):
             caminho.reverse()
             return caminho
         
-        if i > 0 and NodeA.eh_caminho(grid[i-1][j]) and not NodeA.visitado(i-1, j):
+        if i > 0 and NodeA.eh_caminho(grid[i-1][j]) and not (i-1, j) in visited:
             filho = NodeA((i - 1, j), pos_tesouro, grid, no)
             heapq.heappush(fila, filho)
         
         
-        if j < guarda_col and NodeA.eh_caminho(grid[i][j+1]) and not NodeA.visitado(i, j+1):
+        if j < guarda_col and NodeA.eh_caminho(grid[i][j+1]) and not (i, j+1) in visited:
             filho = NodeA((i, j+1), pos_tesouro, grid, no)
             heapq.heappush(fila, filho)
         
         
-        if i < guarda_linha and NodeA.eh_caminho(grid[i+1][j]) and not NodeA.visitado(i+1, j):
+        if i < guarda_linha and NodeA.eh_caminho(grid[i+1][j]) and not (i+1, j) in visited:
             filho = NodeA((i+1, j), pos_tesouro, grid, no)
             heapq.heappush(fila, filho)
         
         
-        if j > 0 and NodeA.eh_caminho(grid[i][j-1]) and not NodeA.visitado(i, j-1):
+        if j > 0 and NodeA.eh_caminho(grid[i][j-1]) and not (i, j-1) in visited:
             filho = NodeA((i, j-1), pos_tesouro, grid, no)
             heapq.heappush(fila, filho)
 
+        visited.add(no.get_cord())
+    return []
+
 grid = [
-    ['I', '.', '.', '.', '.', '.'],
-    ['#', '#', '.', '#', '#', '.'],
-    ['.', '.', '.', '#', 'L', '.'],
-    ['.', 'L', '#', 'T', '.', '.'],
-    ['.', '.', '.', '.', '.', '.']
+    ['I', '.', 'L', '#', 'L', '.', 'T'],
+    ['.', '.', '.', '#', '.', '.', '.'],
+    ['.', '.', '.', '#', '.', '.', '.'],
 ]
 pos_inicial = (0, 0)
-pos_tesouro = (3, 3)
+pos_tesouro = (0, 6)
 
+caminho_a_estrela = busca_a_estrela(grid, pos_inicial, pos_tesouro)
 
-caminho = busca_a_estrela(grid, pos_inicial, pos_tesouro)
-print(*caminho)
-##print(mapa)
+print(caminho_a_estrela)

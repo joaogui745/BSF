@@ -1,11 +1,8 @@
 import heapq
 
 class NodeG:
-    visited = set()
-    tb_caminho = {'.','L','T'}
     def __init__(self, cord, meta, pai = None):
         self.i, self.j = cord
-        NodeG.visited.add(cord)
         self.heuristica = abs(self.i - meta[0]) + abs(self.j - meta[1])
         self.pai = pai
     def __repr__(self):
@@ -14,14 +11,12 @@ class NodeG:
         return self.heuristica < other.heuristica
     def get_cord(self):
         return (self.i, self.j)
-    def eh_caminho(chave):
-        return chave in NodeG.tb_caminho
     def get_pai(self):
         return self.pai
-    def visitado(i, j):
-        return (i, j) in NodeG.visited
     
 def busca_gulosa(grid, pos_inicial, pos_tesouro):
+    visitado = set()
+    tb_caminho = {'.','L','T'}
     caminho = []
     fila = []
     guarda_linha = len(grid) - 1
@@ -39,34 +34,45 @@ def busca_gulosa(grid, pos_inicial, pos_tesouro):
             caminho.reverse()
             return caminho
         
-        if i > 0 and NodeG.eh_caminho(grid[i-1][j]) and not NodeG.visitado(i-1, j):
+        if i > 0 and grid[i-1][j] in tb_caminho and not (i-1, j) in visitado:
             filho = NodeG((i - 1, j), pos_tesouro, no)
             heapq.heappush(fila, filho)
         
         
-        if j < guarda_col and NodeG.eh_caminho(grid[i][j+1]) and not NodeG.visitado(i, j+1):
+        if j < guarda_col and grid[i][j+1] in tb_caminho and not (i, j+1) in visitado:
             filho = NodeG((i, j+1), pos_tesouro, no)
             heapq.heappush(fila, filho)
         
         
-        if i < guarda_linha and NodeG.eh_caminho(grid[i+1][j]) and not NodeG.visitado(i+1, j):
+        if i < guarda_linha and grid[i+1][j] in tb_caminho and not (i+1, j) in visitado:
             filho = NodeG((i+1, j), pos_tesouro, no)
             heapq.heappush(fila, filho)
         
         
-        if j > 0 and NodeG.eh_caminho(grid[i][j-1]) and not NodeG.visitado(i, j-1):
+        if j > 0 and grid[i][j-1] in tb_caminho and not (i, j-1) in visitado:
             filho = NodeG((i, j-1), pos_tesouro, no)
             heapq.heappush(fila, filho)
+        
+        visitado.add((i, j))
+    
+    return []
+        
 
-mapa = [
-    ['I', '.', 'L', 'L', 'L', '.', 'T'],
-    ['.', '.', '.', 'L', '.', '.', '.'],
-    ['.', '.', '.', '.', '.', '.', '.'],
+
+grid = [
+    ['I', '#', '.', '#', 'L', 'L', 'T'],
+    ['.', '#', '.', '#', 'L', '#', '.'],
+    ['.', '#', '.', '#', 'L', '#', '.'],
+    ['.', '#', '.', '.', '.', '#', '.'],
+    ['.', '#', '.', '#', '.', '#', '.'],
+    ['.', '#', '.', '#', '.', '#', '.'],
+    ['.', '.', '.', '#', '.', '.', '.'],
 ]
+
 pos_inicial = (0, 0)
 pos_tesouro = (0, 6)
 
 
-caminho = busca_gulosa(mapa, pos_inicial, pos_tesouro)
+caminho = busca_gulosa(grid, pos_inicial, pos_tesouro)
 print(*caminho)
 ##print(mapa)
