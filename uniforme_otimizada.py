@@ -10,7 +10,7 @@ def busca_custo_uniforme(grid, pos_inicial, pos_tesouro):
     'L' : 5,
     'T' : 0, 
     }
-    root = pos_inicial + (0,)
+    root = (0,) + pos_inicial
     heapq.heappush(fila, root)
     antecessor[root] = None  
 
@@ -19,12 +19,12 @@ def busca_custo_uniforme(grid, pos_inicial, pos_tesouro):
 
     while (fila):
         no = heapq.heappop(fila)
-        i , j, custo = no
+        custo, i , j = no
         cord = (i, j)
 
-        if (no[0:2]) == pos_tesouro:
+        if (no[1:]) == pos_tesouro:
             while(no):
-                caminho.append(no[0:2])
+                caminho.append(no[1:])
                 no = antecessor[no]
             caminho.reverse()
             return caminho
@@ -35,25 +35,21 @@ def busca_custo_uniforme(grid, pos_inicial, pos_tesouro):
                 ni, nj = i + oi, j + oj
                 if 0 <= ni < linhas and 0 <= nj < colunas and grid[ni][nj] != '#' and not (ni, nj) in visitados:
                     novocusto = tb_custo[grid[ni][nj]] + custo
-                    filho = (ni, nj, novocusto)
-                    antecessor[(ni, nj, novocusto)] = no
+                    filho = (novocusto, ni, nj)
+                    antecessor[(novocusto, ni, nj,)] = no
                     heapq.heappush(fila, filho)
     return []
 
     
 
 grid = [
-    ['I', '#', '.', '#', 'L', 'L', 'T'],
-    ['.', '#', '.', '#', 'L', '#', '.'],
-    ['.', '#', '.', '#', 'L', '#', '.'],
-    ['.', '#', '.', '.', '.', '#', '.'],
-    ['.', '#', '.', '#', '.', '#', '.'],
-    ['.', '#', '.', '#', '.', '#', '.'],
-    ['.', '.', '.', '#', '.', '.', '.'],
-]
+    ['I', '#', '.', '#', 'T'],
+    ['.', 'L', 'L', 'L', '.'],
+    ['.', '#', '#', '#', '.'],
+    ['L', '.', 'L', '.', 'L']]
 
 pos_inicial = (0, 0)
-pos_tesouro = (0, 6)
+pos_tesouro = (0, 4)
 
 caminho_bcu = busca_custo_uniforme(grid, pos_inicial, pos_tesouro)
 
